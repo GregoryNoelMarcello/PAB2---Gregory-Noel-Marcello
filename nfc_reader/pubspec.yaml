@@ -9,8 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.20.2           # Untuk format tanggal dan waktu
-  nfc_manager: ^3.5.0     # Library utama untuk membaca NFC
+  intl: ^0.20.2           
+  nfc_manager: ^3.5.0     
 
 dev_dependencies:
   flutter_test:
