@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:karyawan/models/karyawan.dart';
@@ -14,14 +15,15 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
+      home: MyHomePage(), 
     );
   }
 }
 
-class MyHomePage extends StatelessWidget{
+class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
-
+  
+  // ✨ Tambahkan fungsi ini
   Future<List<Karyawan>> _readJsonData() async {
     final String response = await rootBundle.loadString('assets/karyawan.json');
     final List<dynamic> data = json.decode(response);
@@ -32,8 +34,9 @@ class MyHomePage extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).primaryColor,
         title: const Text('Data Karyawan'),
+        foregroundColor: Colors.white,
       ),
       body: FutureBuilder(
         future: _readJsonData(),
@@ -51,9 +54,9 @@ class MyHomePage extends StatelessWidget{
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Umur: ${karyawan.umur.toString()} tahun"),
-                      Text("Alamat: ${karyawan.alamat.jalan()),
-                      Te
+                      Text('Umur: ${karyawan.umur} tahun'),
+                      Text('Alamat: ${karyawan.alamat.jalan}, ${karyawan.alamat.kota}, ${karyawan.alamat.provinsi}'),
+                      Text('Hobi: ${karyawan.hobi.join(', ')}'),
                     ],
                   ),
                 );
