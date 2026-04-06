@@ -44,8 +44,8 @@ class _PriceListScreenState extends State<PriceListScreen> {
           final item = Map<String,dynamic>.from(
             items[index].value as Map,
           );
-          final String tanggal = item['tanggal']??'';
-          final String harga = item['harga']??'';
+          final String tanggal = item['tanggal']?.toString()??'';
+          final String harga = item['harga']?.toString()??'';
 
           return ListTile(
             title: Text(harga),
