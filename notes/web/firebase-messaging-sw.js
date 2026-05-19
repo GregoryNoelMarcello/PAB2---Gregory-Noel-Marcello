@@ -7,8 +7,8 @@ firebase.initializeApp({
   authDomain: "notes-f96eb.firebaseapp.com",
   projectId: "notes-f96eb",
   storageBucket: "notes-f96eb.firebasestorage.app",
-  messagingSenderId: "1014103626721",
-  appId: "1:1014103626721:web:f3b42914...",
+  messagingSenderId: "1024447885857",
+  appId: "1:1024447885857:web:f3b42914...",
 });
 
 const messaging = firebase.messaging();
