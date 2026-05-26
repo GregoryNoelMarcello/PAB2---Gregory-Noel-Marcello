@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'firebase_options.dart';
 import 'screens/note_list_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'services/fcm_service.dart';
+import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
     // Inisialisasi Firebase agar seluruh service Firebase dapat digunakan
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
     // Mendaftarkan background handler untuk menangani
     // pesan FCM saat aplikasi berada di background/terminated
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -31,16 +35,56 @@ void main() async {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  static void setLocale(Locale locale) {
+    _MainAppState._setLocale(locale);
+  }
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  Locale _locale = const Locale('id'); // Default: Indonesia
+
+  static void _setLocale(Locale locale) {
+    // Access the state from widget to update locale
+    _instance?._updateLocale(locale);
+  }
+
+  static _MainAppState? _instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _instance = this;
+  }
+
+  void _updateLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Notes App',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
+      title: 'My Notes',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(colorSchemeSeed: Colors.deepPurple, useMaterial3: true),
+      locale: _locale,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('id'), // Indonesian
+      ],
       home: const NoteListScreen(),
     );
   }
@@ -51,16 +95,18 @@ class MainApp extends StatelessWidget {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   debugPrint('Handling a background message: ${message.messageId}');
-  
+
   // If it's a data-only message (no notification object), we manually show it
   if (message.notification == null && message.data.isNotEmpty) {
     final title = message.data['title'] ?? 'Notifikasi Baru';
     final body = message.data['body'] ?? 'Klik untuk melihat detail';
 
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    
+
     // We need to re-initialize for the background isolate
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const initSettings = InitializationSettings(android: androidSettings);
     await flutterLocalNotificationsPlugin.initialize(
       settings: initSettings, // Use named parameter

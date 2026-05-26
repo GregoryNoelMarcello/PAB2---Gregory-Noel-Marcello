@@ -192,4 +192,36 @@ class FcmService {
       debugPrint('Error sending notification: $e');
     }
   }
+
+  /// Subscribe to a specific topic
+  Future<void> subscribeTopic(String topic) async {
+    try {
+      if (!kIsWeb) {
+        await _messaging.subscribeToTopic(topic).timeout(
+          const Duration(seconds: 10),
+          onTimeout: () => debugPrint('Subscription to topic $topic timed out'),
+        );
+        debugPrint('Subscribed to topic: $topic');
+      }
+    } catch (e) {
+      debugPrint('Error subscribing to topic $topic: $e');
+      rethrow;
+    }
+  }
+
+  /// Unsubscribe from a specific topic
+  Future<void> unsubscribeTopic(String topic) async {
+    try {
+      if (!kIsWeb) {
+        await _messaging.unsubscribeFromTopic(topic).timeout(
+          const Duration(seconds: 10),
+          onTimeout: () => debugPrint('Unsubscription from topic $topic timed out'),
+        );
+        debugPrint('Unsubscribed from topic: $topic');
+      }
+    } catch (e) {
+      debugPrint('Error unsubscribing from topic $topic: $e');
+      rethrow;
+    }
+  }
 }
